@@ -50,6 +50,14 @@ class Lexer
       @line += 1
     in '+' | '-' | '*'
       add_token(c.to_sym, c)
+    in '/'
+      c = peek
+      case c
+      in '/'
+        advance until (peek == "\n" || end?)
+      else
+        add_token('/'.to_sym, '/')
+      end
     in /\d/
       number
     else
