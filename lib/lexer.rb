@@ -37,6 +37,12 @@ class Lexer
     @source[@current]
   end
 
+  def match?(expected)
+    matched = (peek == expected)
+    advance if matched
+    matched
+  end
+
   def add_token(type, lexeme='', literal=nil)
     @tokens << Token.new(type, @line, lexeme, literal)
   end
@@ -50,6 +56,9 @@ class Lexer
       @line += 1
     in '+' | '-' | '*'
       add_token(c.to_sym, c)
+    in '='
+      type, lexeme = match?('=') ? [:eq, '=='] : ['='.to_sym, '=']
+      add_token(type, lexeme)
     in '/'
       c = peek
       case c
