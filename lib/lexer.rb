@@ -43,7 +43,8 @@ class Lexer
     matched
   end
 
-  def add_token(type, lexeme='', literal=nil)
+  def add_token(type, literal=nil)
+    lexeme = end? ? '' : @source[@start...@current]
     @tokens << Token.new(type, @line, lexeme, literal)
   end
 
@@ -55,17 +56,17 @@ class Lexer
     in /\n/
       @line += 1
     in '+' | '-' | '*'
-      add_token(c.to_sym, c)
+      add_token(c.to_sym)
     in '='
-      type, lexeme = match?('=') ? [:eq, '=='] : ['='.to_sym, '=']
-      add_token(type, lexeme)
+      type = match?('=') ? :eq : '='.to_sym
+      add_token(type)
     in '/'
       c = peek
       case c
       in '/'
         advance until (peek == "\n" || end?)
       else
-        add_token('/'.to_sym, '/')
+        add_token('/'.to_sym)
       end
     in /\d/
       number
@@ -80,6 +81,6 @@ class Lexer
     end
     lexeme = @source[@start...@current]
     literal = lexeme.to_f
-    add_token(:number, lexeme, literal)
+    add_token(:number, literal)
   end
 end
