@@ -77,6 +77,8 @@ class Lexer
       end
     in /\d/
       number
+    in '"'
+      string
     else
       Error.report(@line, "Unexpected character: #{c}")
     end
@@ -89,5 +91,19 @@ class Lexer
     lexeme = @source[@start...@current]
     literal = lexeme.to_f
     add_token(:number, literal)
+  end
+
+  def string
+    until peek == '"'
+      if end?
+        Error.report(@line, "Unterminated string.")
+        return
+      end
+      @line += 1 if peek == "\n"
+      advance
+    end
+    advance
+    literal = @source[(@start+1)...(@current-1)]
+    add_token(:string, literal)
   end
 end
