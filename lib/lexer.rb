@@ -70,9 +70,7 @@ class Lexer
       type = match?('=') ? :le : :lt
       add_token(type)
     in '/'
-      c = peek
-      case c
-      in '/'
+      if match?('/')
         advance until (peek == "\n" || end?)
       else
         add_token('/'.to_sym)
