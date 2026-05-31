@@ -94,7 +94,7 @@ class Lexer
   end
 
   def string
-    until peek == '"'
+    until match?('"')
       if end?
         Error.report(@line, "Unterminated string.")
         return
@@ -102,7 +102,6 @@ class Lexer
       @line += 1 if peek == "\n"
       advance
     end
-    advance
     literal = @source[(@start+1)...(@current-1)]
     add_token(:string, literal)
   end
