@@ -63,6 +63,9 @@ class Lexer
     in '!'
       type = match?('=') ? :nq : '!'.to_sym
       add_token(type)
+    in '>'
+      type = match?('=') ? :ge : :gt
+      add_token(type)
     in '/'
       c = peek
       case c
