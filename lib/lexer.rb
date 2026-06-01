@@ -41,6 +41,10 @@ class Lexer
     @source[@current]
   end
 
+  def peek_next
+    @source[@current + 1]
+  end
+
   def match?(expected)
     matched = (peek == expected)
     advance if matched
@@ -93,6 +97,10 @@ class Lexer
   def number
     while peek =~ /\d/
       advance
+    end
+    if peek == '.' && peek_next =~ /\d/
+      advance
+      advance while peek =~ /\d/
     end
     lexeme = @source[@start...@current]
     literal = lexeme.to_f
