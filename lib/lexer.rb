@@ -4,6 +4,10 @@ require_relative 'error'
 require_relative 'token'
 
 class Lexer
+  RESERVED_WORDS = [
+    :null,
+  ]
+
   def initialize(source)
     @source = source
     @start = 0
@@ -79,6 +83,8 @@ class Lexer
       number
     in '"'
       string
+    in /\w/
+      identifier
     else
       Error.report(@line, "Unexpected character: #{c}")
     end
@@ -104,5 +110,14 @@ class Lexer
     end
     literal = @source[(@start+1)...(@current-1)]
     add_token(:string, literal)
+  end
+
+  def identifier
+    while peek =~ /\w/
+      advance
+    end
+    symbol = @source[@start...@current].to_sym
+    type = RESERVED_WORDS.include?(symbol) ? symbol : :identifier
+    add_token(type)
   end
 end
