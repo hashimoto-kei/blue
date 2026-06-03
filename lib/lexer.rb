@@ -66,16 +66,16 @@ class Lexer
     in '+' | '-' | '*' | ';'
       add_token(c.to_sym)
     in '='
-      type = match?('=') ? :eq : '='.to_sym
+      type = match?('=') ? :== : '='.to_sym
       add_token(type)
     in '!'
-      type = match?('=') ? :nq : '!'.to_sym
+      type = match?('=') ? :!= : '!'.to_sym
       add_token(type)
     in '>'
-      type = match?('=') ? :ge : :gt
+      type = match?('=') ? :>= : :>
       add_token(type)
     in '<'
-      type = match?('=') ? :le : :lt
+      type = match?('=') ? :<= : :<
       add_token(type)
     in '/'
       if match?('/')
