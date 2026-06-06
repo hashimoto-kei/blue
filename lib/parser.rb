@@ -1,0 +1,112 @@
+# frozen_string_literal: true
+
+require_relative 'nodes/binary'
+require_relative 'nodes/literal'
+require_relative 'nodes/unary'
+
+class Parser
+  def initialize(tokens)
+    @tokens = tokens
+    @current = 0
+  end
+
+  def parse = expression
+
+  private
+
+  def end?
+    @current >= @tokens.size
+  end
+
+  def advance
+    token = @tokens[@current]
+    @current += 1
+    token
+  end
+
+  def peek
+    @tokens[@current]
+  end
+
+  def previous_token
+    @tokens[@current - 1]
+  end
+
+  def match(*tokens)
+    matched = (tokens.include?(peek.type))
+    advance if matched
+    matched
+  end
+
+  # expression: equality
+  def expression = equality
+
+  # equality: comparison ( ( "==" | "!=" ) comparison )*
+  def equality
+    node = comparison
+    while match(:==, :!=)
+      op = previous_token
+      rhs = comparison
+      node = Node::Binary.new(op, node, rhs)
+    end
+    node
+  end
+
+  # comparison: term ( ( ">" | ">=" | "<" | "<=" ) term )*
+  def comparison
+    node = term
+    while match(:>, :>=, :<, :<=)
+      op = previous_token
+      rhs = term
+      node = Node::Binary.new(op, node, rhs)
+    end
+    node
+  end
+
+  # term: factor ( ( "+" | "-" ) factor )*
+  def term
+    node = factor
+    while match(:+, :-)
+      op = previous_token
+      rhs = factor
+      node = Node::Binary.new(op, node, rhs)
+    end
+    node
+  end
+
+  # factor: unary ( ( "*" | "/" ) unary )*
+  def factor
+    node = unary
+    while match(:*, :/)
+      op = previous_token
+      rhs = unary
+      node = Node::Binary.new(op, node, rhs)
+    end
+    node
+  end
+
+  # unary: ( "-" | "!" ) unary
+  #      | primary
+  def unary
+    if match(:-, :!)
+      op = previous_token
+      rhs = unary
+      node = Node::Unary.new(op, rhs)
+    else
+      node = primary
+    end
+    node
+  end
+
+  # primary: number
+  #        | string
+  #        | "null"
+  def primary
+    if match(:number, :string)
+      return Node::Literal.new(previous_token.literal)
+    end
+    if match(:null)
+      return Node::Literal.new(nil)
+    end
+  end
+end
