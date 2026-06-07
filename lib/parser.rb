@@ -38,6 +38,15 @@ class Parser
     matched
   end
 
+  def consume(*tokens)
+    matched = (tokens.include?(peek.type))
+    if matched
+      advance
+    else
+      Error.report(peek.line, "Unexpected token: #{peek.type}")
+    end
+  end
+
   # expression: equality
   def expression = equality
 
@@ -101,12 +110,18 @@ class Parser
   # primary: number
   #        | string
   #        | "null"
+  #        | ( expression )
   def primary
     if match(:number, :string)
       return Node::Literal.new(previous_token.literal)
     end
     if match(:null)
       return Node::Literal.new(nil)
+    end
+    if match(:'(')
+      node = expression
+      consume(:')')
+      node
     end
   end
 end
