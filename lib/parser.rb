@@ -107,7 +107,7 @@ class Parser
   # primary: number
   #        | string
   #        | "null"
-  #        | ( expression )
+  #        | "(" expression ")"
   def primary
     if match(:number, :string)
       return Node::Literal.new(previous_token.literal)
