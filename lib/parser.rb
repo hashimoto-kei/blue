@@ -32,14 +32,14 @@ class Parser
     @tokens[@current - 1]
   end
 
-  def match(*tokens)
+  def match?(*tokens)
     matched = (tokens.include?(peek.type))
     advance if matched
     matched
   end
 
   def consume(*tokens)
-    unless match(*tokens)
+    unless match?(*tokens)
       Error.report(peek.line, "Unexpected token: #{peek.type}")
     end
   end
@@ -50,7 +50,7 @@ class Parser
   # equality: comparison ( ( "==" | "!=" ) comparison )*
   def equality
     node = comparison
-    while match(:==, :!=)
+    while match?(:==, :!=)
       op = previous_token
       rhs = comparison
       node = Node::Binary.new(op, node, rhs)
@@ -61,7 +61,7 @@ class Parser
   # comparison: term ( ( ">" | ">=" | "<" | "<=" ) term )*
   def comparison
     node = term
-    while match(:>, :>=, :<, :<=)
+    while match?(:>, :>=, :<, :<=)
       op = previous_token
       rhs = term
       node = Node::Binary.new(op, node, rhs)
@@ -72,7 +72,7 @@ class Parser
   # term: factor ( ( "+" | "-" ) factor )*
   def term
     node = factor
-    while match(:+, :-)
+    while match?(:+, :-)
       op = previous_token
       rhs = factor
       node = Node::Binary.new(op, node, rhs)
@@ -83,7 +83,7 @@ class Parser
   # factor: unary ( ( "*" | "/" ) unary )*
   def factor
     node = unary
-    while match(:*, :/)
+    while match?(:*, :/)
       op = previous_token
       rhs = unary
       node = Node::Binary.new(op, node, rhs)
@@ -94,7 +94,7 @@ class Parser
   # unary: ( "-" | "!" ) unary
   #      | primary
   def unary
-    if match(:-, :!)
+    if match?(:-, :!)
       op = previous_token
       rhs = unary
       node = Node::Unary.new(op, rhs)
@@ -109,13 +109,13 @@ class Parser
   #        | "null"
   #        | "(" expression ")"
   def primary
-    if match(:number, :string)
+    if match?(:number, :string)
       return Node::Literal.new(previous_token.literal)
     end
-    if match(:null)
+    if match?(:null)
       return Node::Literal.new(nil)
     end
-    if match(:'(')
+    if match?(:'(')
       node = expression
       consume(:')')
       node
