@@ -39,10 +39,7 @@ class Parser
   end
 
   def consume(*tokens)
-    matched = (tokens.include?(peek.type))
-    if matched
-      advance
-    else
+    unless match(*tokens)
       Error.report(peek.line, "Unexpected token: #{peek.type}")
     end
   end
