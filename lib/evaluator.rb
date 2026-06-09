@@ -6,8 +6,8 @@ class Evaluator
   end
 
   def visit_binary_node(node)
-    lhs = node.lhs.accept(self)
-    rhs = node.rhs.accept(self)
+    lhs = evaluate(node.lhs)
+    rhs = evaluate(node.rhs)
     case node.op.type
     in :+
       lhs + rhs
@@ -21,7 +21,7 @@ class Evaluator
   end
 
   def visit_unary_node(node)
-    rhs = node.rhs.accept(self)
+    rhs = evaluate(node.rhs)
     case node.op.type
     in :-
       - rhd
