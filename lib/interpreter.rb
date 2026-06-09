@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'ast_printer'
+require_relative 'evaluator'
 require_relative 'lexer'
 require_relative 'parser'
 
@@ -14,7 +14,7 @@ class Interpreter
     tokens = lexer.scan_tokens
     parser = Parser.new(tokens)
     node = parser.parse
-    printer = AstPrinter.new
-    puts printer.print(node)
+    evaluator = Evaluator.new
+    puts evaluator.evaluate(node)
   end
 end
