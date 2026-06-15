@@ -10,7 +10,7 @@ class Parser
     @current = 0
   end
 
-  def parse = expression
+  def parse = program
 
   private
 
@@ -42,6 +42,16 @@ class Parser
     unless match?(*tokens)
       Error.report(peek.line, "Unexpected token: #{peek.type}")
     end
+  end
+
+  # program: statement
+  def program = statement
+
+  # statement: expression ";"
+  def statement
+    node = expression
+    consume(:';')
+    node
   end
 
   # expression: equality
