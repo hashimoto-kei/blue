@@ -44,8 +44,12 @@ class Parser
     end
   end
 
-  # program: statement
-  def program = statement
+  # program: statement eof
+  def program
+    node = statement
+    consume(:eof)
+    node
+  end
 
   # statement: expression ";"
   def statement
