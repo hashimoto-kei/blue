@@ -13,8 +13,10 @@ class Interpreter
     lexer = Lexer.new(@source)
     tokens = lexer.scan_tokens
     parser = Parser.new(tokens)
-    node = parser.parse
+    nodes = parser.parse
     evaluator = Evaluator.new
-    puts evaluator.evaluate(node)
+    nodes.each do |node|
+      puts evaluator.evaluate(node)
+    end
   end
 end
