@@ -44,11 +44,13 @@ class Parser
     end
   end
 
-  # program: statement eof
+  # program: statement* eof
   def program
-    node = statement
-    consume(:eof)
-    node
+    nodes = []
+    until match?(:eof)
+      nodes << statement
+    end
+    nodes
   end
 
   # statement: expression ";"
