@@ -36,7 +36,7 @@ class Evaluator
     rhs = evaluate(node.rhs)
     case node.op.type
     in :-
-      - rhd
+      - rhs
     in :!
       ! rhd
     end
