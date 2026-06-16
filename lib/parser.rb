@@ -122,11 +122,19 @@ class Parser
 
   # primary: number
   #        | string
+  #        | "true"
+  #        | "false"
   #        | "null"
   #        | "(" expression ")"
   def primary
     if match?(:number, :string)
       return Node::Literal.new(previous_token.literal)
+    end
+    if match?(:true)
+      return Node::Literal.new(true)
+    end
+    if match?(:false)
+      return Node::Literal.new(false)
     end
     if match?(:null)
       return Node::Literal.new(nil)
