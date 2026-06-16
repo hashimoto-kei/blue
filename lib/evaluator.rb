@@ -38,7 +38,7 @@ class Evaluator
     in :-
       - rhs
     in :!
-      ! rhd
+      ! rhs
     end
   end
 
