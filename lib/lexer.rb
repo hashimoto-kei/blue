@@ -68,10 +68,10 @@ class Lexer
     in '+' | '-' | '*' | ';' | '(' | ')'
       add_token(c.to_sym)
     in '='
-      type = match?('=') ? :== : '='.to_sym
+      type = match?('=') ? :== : :'='
       add_token(type)
     in '!'
-      type = match?('=') ? :!= : '!'.to_sym
+      type = match?('=') ? :!= : :!
       add_token(type)
     in '>'
       type = match?('=') ? :>= : :>
@@ -83,7 +83,7 @@ class Lexer
       if match?('/')
         advance until (peek == "\n" || end?)
       else
-        add_token('/'.to_sym)
+        add_token(:/)
       end
     in /\d/
       number
