@@ -17,6 +17,18 @@ class Evaluator
       lhs * rhs
     in :/
       lhs / rhs
+    in :==
+      lhs == rhs
+    in :!=
+      lhs != rhs
+    in :>
+      lhs > rhs
+    in :>=
+      lhs >= rhs
+    in :<
+      lhs < rhs
+    in :<=
+      lhs <= rhs
     end
   end
 
