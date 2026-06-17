@@ -16,7 +16,7 @@ class Interpreter
     nodes = parser.parse
     evaluator = Evaluator.new
     nodes.each do |node|
-      puts evaluator.evaluate(node)
+      evaluator.evaluate(node)
     end
   end
 end

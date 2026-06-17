@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require_relative 'nodes/binary'
+require_relative 'nodes/expr_stmt'
 require_relative 'nodes/literal'
+require_relative 'nodes/print_stmt'
 require_relative 'nodes/unary'
 
 class Parser
@@ -53,11 +55,28 @@ class Parser
     nodes
   end
 
-  # statement: expression ";"
+  # statement: expression_statement
+  #          | print_statement
   def statement
+    if match?(:print)
+      node = print_statement
+    else
+      node = expression_statement
+    end
+  end
+
+  # expression_statement: expression ";"
+  def expression_statement
     node = expression
     consume(:';')
-    node
+    node = Node::ExprStmt.new(node)
+  end
+
+  # print_statement: print expression ";"
+  def print_statement
+    node = expression
+    consume(:';')
+    node = Node::PrintStmt.new(node)
   end
 
   # expression: equality
