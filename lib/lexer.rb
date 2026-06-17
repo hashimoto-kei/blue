@@ -7,6 +7,7 @@ class Lexer
   RESERVED_WORDS = [
     :false,
     :null,
+    :print,
     :true,
   ]
 
