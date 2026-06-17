@@ -5,9 +5,9 @@ require_relative 'token'
 
 class Lexer
   RESERVED_WORDS = [
-    :true,
     :false,
     :null,
+    :true,
   ]
 
   def initialize(source)
