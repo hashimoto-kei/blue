@@ -44,7 +44,7 @@ class Parser
     end
   end
 
-  # program: statement* eof
+  # program: statement* "eof"
   def program
     nodes = []
     until match?(:eof)
