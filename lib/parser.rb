@@ -5,6 +5,8 @@ require_relative 'nodes/expr_stmt'
 require_relative 'nodes/literal'
 require_relative 'nodes/print_stmt'
 require_relative 'nodes/unary'
+require_relative 'nodes/var_declaration'
+require_relative 'nodes/variable'
 
 class Parser
   def initialize(tokens)
@@ -44,6 +46,7 @@ class Parser
     unless match?(*tokens)
       Error.report(peek.line, "Unexpected token: #{peek.type}")
     end
+    previous_token
   end
 
   # program: statement* "eof"
@@ -57,12 +60,15 @@ class Parser
 
   # statement: expression_statement
   #          | print_statement
+  #          | var_declaration
   def statement
     if match?(:print)
-      node = print_statement
-    else
-      node = expression_statement
+      return print_statement
     end
+    if match?(:var)
+      return var_declaration
+    end
+    expression_statement
   end
 
   # expression_statement: expression ";"
@@ -77,6 +83,17 @@ class Parser
     node = expression
     consume(:';')
     node = Node::PrintStmt.new(node)
+  end
+
+  # var_declaration: "var" identifier ("=" expression)? ";"
+  def var_declaration
+    node = consume(:identifier)
+    rhs = nil
+    if match?(:'=')
+      rhs = expression
+    end
+    consume(:';')
+    node = Node::VarDeclaration.new(node, rhs)
   end
 
   # expression: equality
@@ -144,6 +161,7 @@ class Parser
   #        | "true"
   #        | "false"
   #        | "null"
+  #        | identifier
   #        | "(" expression ")"
   def primary
     if match?(:number, :string)
@@ -157,6 +175,9 @@ class Parser
     end
     if match?(:null)
       return Node::Literal.new(nil)
+    end
+    if match?(:identifier)
+      return Node::Variable.new(previous_token)
     end
     if match?(:'(')
       node = expression
