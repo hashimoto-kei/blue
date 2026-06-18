@@ -9,6 +9,7 @@ class Lexer
     :null,
     :print,
     :true,
+    :var,
   ]
 
   def initialize(source)
