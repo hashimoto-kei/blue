@@ -22,7 +22,7 @@ class Evaluator
   def visit_var_declaration_node(node)
     name = node.lhs.lexeme
     value = node.rhs.nil? ? nil : evaluate(node.rhs)
-    @environment.set(name, value)
+    @environment.define(name, value)
   end
 
   def visit_variable_node(node)

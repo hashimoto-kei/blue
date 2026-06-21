@@ -5,7 +5,7 @@ class Environment
     @variables = {}
   end
 
-  def set(name, value)
+  def define(name, value)
     @variables[name] = value
   end
 
