@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'nodes/assign'
 require_relative 'nodes/binary'
 require_relative 'nodes/expr_stmt'
 require_relative 'nodes/literal'
@@ -96,8 +97,20 @@ class Parser
     node = Node::VarDeclaration.new(node, rhs)
   end
 
-  # expression: equality
-  def expression = equality
+  # expression: assignment
+  def expression = assignment
+
+  # assignment: identifier "=" assignment
+  #           | equality
+  def assignment
+    node = equality
+    if match?(:'=')
+      name = node.var
+      rhs = assignment
+      node = Node::Assign.new(name, rhs)
+    end
+    node
+  end
 
   # equality: comparison ( ( "==" | "!=" ) comparison )*
   def equality

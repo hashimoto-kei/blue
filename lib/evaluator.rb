@@ -30,6 +30,12 @@ class Evaluator
     @environment.get(name)
   end
 
+  def visit_assign_node(node)
+    name = node.lhs.var.lexeme
+    value = evaluate(node.rhs)
+    @environment.assign(name, value)
+  end
+
   def visit_binary_node(node)
     lhs = evaluate(node.lhs)
     rhs = evaluate(node.rhs)

@@ -9,6 +9,13 @@ class Environment
     @variables[name] = value
   end
 
+  def assign(name, value)
+    unless @variables.key?(name)
+      raise "Undefined variable: '#{name}'."
+    end
+    @variables[name] = value
+  end
+
   def get(name)
     unless @variables.key?(name)
       raise "Undefined variable: '#{name}'."
