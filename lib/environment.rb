@@ -17,9 +17,9 @@ class Environment
   end
 
   def get(name)
-    unless @variables.key?(name)
-      raise "Undefined variable: '#{name}'."
+    if @variables.key?(name)
+      return @variables[name]
     end
-    @variables[name]
+    raise "Undefined variable: '#{name}'."
   end
 end
