@@ -1,6 +1,6 @@
 var msg = "Hello, world!";
 print msg;
-var msg = "Hello, Blue!";
+msg = "Hello, Blue!";
 print msg;
 var a = 2;
 var b = 3;

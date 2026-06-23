@@ -105,9 +105,8 @@ class Parser
   def assignment
     node = equality
     if match?(:'=')
-      name = node.var
       rhs = assignment
-      node = Node::Assign.new(name, rhs)
+      node = Node::Assign.new(node, rhs)
     end
     node
   end
