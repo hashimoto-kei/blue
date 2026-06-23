@@ -11,7 +11,7 @@ class Environment
 
   def assign(name, value)
     if @variables.key?(name)
-      @variables[name] = value
+      return @variables[name] = value
     end
     raise "Undefined variable: '#{name}'."
   end
