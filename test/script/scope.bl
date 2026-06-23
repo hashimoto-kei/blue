@@ -1,0 +1,19 @@
+var x = "global_x";
+var y = "global_y";
+var z = "global_z";
+{
+  var x = "outer_x";
+  var y = "outer_y";
+  {
+    var x = "inner_x";
+    print x;
+    print y;
+    print z;
+  }
+  print x;
+  print y;
+  print z;
+}
+print x;
+print y;
+print z;
