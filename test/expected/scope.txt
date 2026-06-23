@@ -1,0 +1,9 @@
+inner_x
+outer_y
+global_z
+outer_x
+outer_y
+global_z
+global_x
+global_y
+global_z

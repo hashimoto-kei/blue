@@ -67,7 +67,7 @@ class Lexer
       # do nothing (skip white space)
     in /\n/
       @line += 1
-    in '+' | '-' | '*' | ';' | '(' | ')'
+    in '+' | '-' | '*' | ';' | '(' | ')' | '{' | '}'
       add_token(c.to_sym)
     in '='
       type = match?('=') ? :== : :'='

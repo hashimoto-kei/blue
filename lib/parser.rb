@@ -2,6 +2,7 @@
 
 require_relative 'nodes/assign'
 require_relative 'nodes/binary'
+require_relative 'nodes/block'
 require_relative 'nodes/expr_stmt'
 require_relative 'nodes/literal'
 require_relative 'nodes/print_stmt'
@@ -62,12 +63,16 @@ class Parser
   # statement: expression_statement
   #          | print_statement
   #          | var_declaration
+  #          | block
   def statement
     if match?(:print)
       return print_statement
     end
     if match?(:var)
       return var_declaration
+    end
+    if match?(:'{')
+      return block
     end
     expression_statement
   end
@@ -95,6 +100,15 @@ class Parser
     end
     consume(:';')
     node = Node::VarDeclaration.new(node, rhs)
+  end
+
+  # block: "{" statement* "}"
+  def block
+    statements = []
+    until match?(:'}')
+      statements << statement
+    end
+    node = Node::Block.new(statements)
   end
 
   # expression: assignment
