@@ -6,6 +6,7 @@ require_relative 'nodes/block'
 require_relative 'nodes/expr_stmt'
 require_relative 'nodes/literal'
 require_relative 'nodes/print_stmt'
+require_relative 'nodes/program'
 require_relative 'nodes/unary'
 require_relative 'nodes/var_declaration'
 require_relative 'nodes/variable'
@@ -53,11 +54,11 @@ class Parser
 
   # program: statement* "eof"
   def program
-    nodes = []
+    statements = []
     until match?(:eof)
-      nodes << statement
+      statements << statement
     end
-    nodes
+    node = Node::Program.new(statements)
   end
 
   # statement: expression_statement

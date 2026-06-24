@@ -11,6 +11,12 @@ class Evaluator
     node.accept(self)
   end
 
+  def visit_program_node(node)
+    node.statements.each do |statement|
+      evaluate(statement)
+    end
+  end
+
   def visit_block_node(node)
     environment = @environment
     @environment = Environment.new(@environment)
