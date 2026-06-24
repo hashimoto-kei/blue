@@ -1,3 +1,4 @@
+// lexical scope test
 var x = "global_x";
 var y = "global_y";
 var z = "global_z";
