@@ -6,6 +6,7 @@ require_relative 'nodes/block'
 require_relative 'nodes/expr_stmt'
 require_relative 'nodes/if_stmt'
 require_relative 'nodes/literal'
+require_relative 'nodes/logical'
 require_relative 'nodes/print_stmt'
 require_relative 'nodes/program'
 require_relative 'nodes/unary'
@@ -134,12 +135,23 @@ class Parser
   def expression = assignment
 
   # assignment: identifier "=" assignment
-  #           | equality
+  #           | logic_and
   def assignment
-    node = equality
+    node = logic_and
     if match?(:'=')
       rhs = assignment
       node = Node::Assign.new(node, rhs)
+    end
+    node
+  end
+
+  # logic_and: equality ("and" equality)*
+  def logic_and
+    node = equality
+    while match?(:and)
+      op = previous_token
+      rhs = equality
+      node = Node::Logical.new(op, node, rhs)
     end
     node
   end

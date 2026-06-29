@@ -87,6 +87,14 @@ class Evaluator
     end
   end
 
+  def visit_logical_node(node)
+    lhs = evaluate(node.lhs)
+    case node.op.type
+    in :and
+      lhs && evaluate(node.rhs)
+    end
+  end
+
   def visit_unary_node(node)
     rhs = evaluate(node.rhs)
     case node.op.type
