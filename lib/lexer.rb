@@ -5,7 +5,9 @@ require_relative 'token'
 
 class Lexer
   RESERVED_WORDS = [
+    :else,
     :false,
+    :if,
     :null,
     :print,
     :true,

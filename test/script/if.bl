@@ -1,0 +1,9 @@
+var x = 1;
+if (x == 1) print "x is 1";
+if (x == 2) print "x is 2"; else print "x is not 2";
+
+if (x == 3) {
+  print "x is 3";
+} else {
+  print "x is not 3";
+}
