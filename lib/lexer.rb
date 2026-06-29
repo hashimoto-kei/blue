@@ -10,6 +10,7 @@ class Lexer
     :false,
     :if,
     :null,
+    :or,
     :print,
     :true,
     :var,

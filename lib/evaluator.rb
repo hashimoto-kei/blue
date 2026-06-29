@@ -92,6 +92,8 @@ class Evaluator
     case node.op.type
     in :and
       lhs && evaluate(node.rhs)
+    in :or
+      lhs || evaluate(node.rhs)
     end
   end
 
