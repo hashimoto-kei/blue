@@ -135,9 +135,9 @@ class Parser
   def expression = assignment
 
   # assignment: identifier "=" assignment
-  #           | logic_and
+  #           | logical_and
   def assignment
-    node = logic_and
+    node = logical_and
     if match?(:'=')
       rhs = assignment
       node = Node::Assign.new(node, rhs)
@@ -145,8 +145,8 @@ class Parser
     node
   end
 
-  # logic_and: equality ("and" equality)*
-  def logic_and
+  # logical_and: equality ("and" equality)*
+  def logical_and
     node = equality
     while match?(:and)
       op = previous_token
