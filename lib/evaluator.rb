@@ -30,6 +30,15 @@ class Evaluator
     evaluate(node.expr)
   end
 
+  def visit_if_stmt_node(node)
+    condition = evaluate(node.condition)
+    if condition
+      evaluate(node.then_body)
+    elsif !node.else_body.nil?
+      evaluate(node.else_body)
+    end
+  end
+
   def visit_print_stmt_node(node)
     puts evaluate(node.expr)
   end

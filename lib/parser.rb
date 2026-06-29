@@ -4,6 +4,7 @@ require_relative 'nodes/assign'
 require_relative 'nodes/binary'
 require_relative 'nodes/block'
 require_relative 'nodes/expr_stmt'
+require_relative 'nodes/if_stmt'
 require_relative 'nodes/literal'
 require_relative 'nodes/print_stmt'
 require_relative 'nodes/program'
@@ -62,10 +63,14 @@ class Parser
   end
 
   # statement: expression_statement
+  #          | if_statement
   #          | print_statement
   #          | var_declaration
   #          | block
   def statement
+    if match?(:if)
+      return if_statement
+    end
     if match?(:print)
       return print_statement
     end
@@ -83,6 +88,19 @@ class Parser
     node = expression
     consume(:';')
     node = Node::ExprStmt.new(node)
+  end
+
+  # if_statement: "if" "(" expression ")" statement ("else" statement)?
+  def if_statement
+    consume(:'(')
+    conditon = expression
+    consume(:')')
+    then_body = statement
+    else_body = nil
+    if match?(:else)
+      else_body = statement
+    end
+    node = Node::IfStmt.new(conditon, then_body, else_body)
   end
 
   # print_statement: print expression ";"
