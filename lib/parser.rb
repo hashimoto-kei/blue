@@ -135,12 +135,23 @@ class Parser
   def expression = assignment
 
   # assignment: identifier "=" assignment
-  #           | logical_and
+  #           | logical_or
   def assignment
-    node = logical_and
+    node = logical_or
     if match?(:'=')
       rhs = assignment
       node = Node::Assign.new(node, rhs)
+    end
+    node
+  end
+
+  # logical_or: logical_and ("or" logical_and)*
+  def logical_or
+    node = logical_and
+    while match?(:or)
+      op = previous_token
+      rhs = logical_and
+      node = Node::Logical.new(op, node, rhs)
     end
     node
   end

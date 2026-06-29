@@ -2,3 +2,12 @@ var x = false and 1;
 print x;
 var y = true and 1;
 print y;
+var z = true or 1;
+print z;
+var w = false or 1;
+print w;
+
+var a = true and 1 or 2 and 3;
+print a;
+var b = false and 1 or 2 and 3;
+print b;
