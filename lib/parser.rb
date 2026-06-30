@@ -12,6 +12,7 @@ require_relative 'nodes/program'
 require_relative 'nodes/unary'
 require_relative 'nodes/var_declaration'
 require_relative 'nodes/variable'
+require_relative 'nodes/while_stmt'
 
 class Parser
   def initialize(tokens)
@@ -65,12 +66,16 @@ class Parser
 
   # statement: expression_statement
   #          | if_statement
+  #          | while_statement
   #          | print_statement
   #          | var_declaration
   #          | block
   def statement
     if match?(:if)
       return if_statement
+    end
+    if match?(:while)
+      return while_statement
     end
     if match?(:print)
       return print_statement
@@ -102,6 +107,15 @@ class Parser
       else_body = statement
     end
     node = Node::IfStmt.new(conditon, then_body, else_body)
+  end
+
+  # while_statement: "while" "(" expression ")" statement
+  def while_statement
+    consume(:'(')
+    conditon = expression
+    consume(:')')
+    body = statement
+    node = Node::WhileStmt.new(conditon, body)
   end
 
   # print_statement: print expression ";"

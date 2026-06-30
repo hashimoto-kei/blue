@@ -39,6 +39,12 @@ class Evaluator
     end
   end
 
+  def visit_while_stmt_node(node)
+    while evaluate(node.condition)
+      evaluate(node.body)
+    end
+  end
+
   def visit_print_stmt_node(node)
     puts evaluate(node.expr)
   end

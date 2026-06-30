@@ -14,6 +14,7 @@ class Lexer
     :print,
     :true,
     :var,
+    :while,
   ]
 
   def initialize(source)
