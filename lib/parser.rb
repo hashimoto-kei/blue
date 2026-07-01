@@ -67,6 +67,7 @@ class Parser
   # statement: expression_statement
   #          | if_statement
   #          | while_statement
+  #          | for_statement
   #          | print_statement
   #          | var_declaration
   #          | block
@@ -76,6 +77,9 @@ class Parser
     end
     if match?(:while)
       return while_statement
+    end
+    if match?(:for)
+      return for_statement
     end
     if match?(:print)
       return print_statement
@@ -116,6 +120,32 @@ class Parser
     consume(:')')
     body = statement
     node = Node::WhileStmt.new(conditon, body)
+  end
+
+  # for_statement: "for" "(" (var_declaration | ";") expression? ";" expression? ")" statement
+  def for_statement
+    consume(:'(')
+    initializer = nil
+    unless match?(:';')
+      consume(:var)
+      initializer = var_declaration
+    end
+    condition = nil
+    if match?(:';')
+      condition = Node::Literal.new(true)
+    else
+      condition = expression
+      consume(:';')
+    end
+    increment = nil
+    unless match?(:')')
+      increment = expression
+      consume(:')')
+    end
+    body = statement
+    block = Node::Block.new([body, increment].compact)
+    while_stmt = Node::WhileStmt.new(condition, block)
+    node = Node::Block.new([initializer, while_stmt].compact)
   end
 
   # print_statement: print expression ";"
