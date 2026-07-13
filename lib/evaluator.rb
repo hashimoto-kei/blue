@@ -4,7 +4,9 @@ require_relative 'environment'
 
 class Evaluator
   def initialize
-    @environment = Environment.new
+    @globals = Environment.new
+    @environment = @globals
+    initialize_native_functions
   end
 
   def evaluate(node)
@@ -66,6 +68,12 @@ class Evaluator
     @environment.assign(name, value)
   end
 
+  def visit_call_node(node)
+    function = @environment.get(node.callee.lexeme)
+    arguments = node.arguments.map { |argument| evaluate(argument) }
+    function.call(arguments)
+  end
+
   def visit_binary_node(node)
     lhs = evaluate(node.lhs)
     rhs = evaluate(node.rhs)
@@ -115,5 +123,26 @@ class Evaluator
 
   def visit_literal_node(node)
     node.literal
+  end
+
+  private
+
+  def initialize_native_functions
+    @globals.define(
+      'clock',
+      Class.new do
+        def call(arguments)
+          Process.clock_gettime(Process::CLOCK_REALTIME, :second)
+        end
+      end.new
+    )
+    @globals.define(
+      'sleep',
+      Class.new do
+        def call(arguments)
+          Kernel.sleep(arguments[0])
+        end
+      end.new
+    )
   end
 end

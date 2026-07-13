@@ -3,6 +3,7 @@
 require_relative 'nodes/assign'
 require_relative 'nodes/binary'
 require_relative 'nodes/block'
+require_relative 'nodes/call'
 require_relative 'nodes/expr_stmt'
 require_relative 'nodes/if_stmt'
 require_relative 'nodes/literal'
@@ -274,6 +275,7 @@ class Parser
   #        | "false"
   #        | "null"
   #        | identifier
+  #        | call
   #        | "(" expression ")"
   def primary
     if match?(:number, :string)
@@ -289,12 +291,32 @@ class Parser
       return Node::Literal.new(nil)
     end
     if match?(:identifier)
-      return Node::Variable.new(previous_token)
+      identifier = previous_token
+      if match?(:'(')
+        return call(identifier)
+      end
+      return Node::Variable.new(identifier)
     end
     if match?(:'(')
       node = expression
       consume(:')')
       node
     end
+  end
+
+  # call: identifier ( "(" arguments? ")" )+
+  def call(callee)
+    rhs = match?(:')') ? [] : arguments
+    Node::Call.new(callee, rhs)
+  end
+
+  # arguments: expression ( "," expression )*
+  def arguments
+    expressions = [expression]
+    until match?(:')')
+      consume(:',')
+      expressions << expression
+    end
+    expressions
   end
 end
