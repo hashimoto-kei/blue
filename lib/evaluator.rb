@@ -6,7 +6,7 @@ class Evaluator
   def initialize
     @globals = Environment.new
     @environment = @globals
-    initialize_native_functions
+    define_native_functions
   end
 
   def evaluate(node)
@@ -127,7 +127,7 @@ class Evaluator
 
   private
 
-  def initialize_native_functions
+  def define_native_functions
     @globals.define(
       'clock',
       Class.new do
