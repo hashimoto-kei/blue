@@ -291,11 +291,8 @@ class Parser
       return Node::Literal.new(nil)
     end
     if match?(:identifier)
-      identifier = previous_token
-      if match?(:'(')
-        return call(identifier)
-      end
-      return Node::Variable.new(identifier)
+      node = Node::Variable.new(previous_token)
+      return match?(:'(') ? call(node) : node
     end
     if match?(:'(')
       node = expression
