@@ -69,7 +69,7 @@ class Evaluator
   end
 
   def visit_call_node(node)
-    function = @environment.get(node.callee.lexeme)
+    function = evaluate(node.callee)
     arguments = node.arguments.map { |argument| evaluate(argument) }
     function.call(arguments)
   end
