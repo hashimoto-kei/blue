@@ -131,17 +131,13 @@ class Evaluator
     @globals.define(
       'clock',
       Class.new do
-        def call(arguments)
-          Process.clock_gettime(Process::CLOCK_REALTIME, :second)
-        end
+        def call(arguments) = Process.clock_gettime(Process::CLOCK_REALTIME, :second)
       end.new
     )
     @globals.define(
       'sleep',
       Class.new do
-        def call(arguments)
-          Kernel.sleep(arguments[0])
-        end
+        def call(arguments) = Kernel.sleep(arguments[0])
       end.new
     )
   end
