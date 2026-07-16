@@ -51,7 +51,7 @@ class Parser
 
   def consume(*tokens)
     unless match?(*tokens)
-      Error.report(peek.line, "Unexpected token: #{peek.type}")
+      Error.report(peek.line, "Invalid token; expected: #{tokens}, actual: #{peek.type}")
     end
     previous_token
   end
