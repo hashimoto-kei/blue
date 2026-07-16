@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
+require_relative 'callable'
 require_relative 'environment'
 
 class Evaluator
+  attr_reader :globals
+
   def initialize
     @globals = Environment.new
     @environment = @globals
@@ -59,6 +62,12 @@ class Evaluator
     @environment.define(name, value)
   end
 
+  def visit_func_declaration_node(node)
+    name = node.name.lexeme
+    callable = Callable.new(node.params, node.body)
+    @environment.define(name, callable)
+  end
+
   def visit_variable_node(node)
     name = node.var.lexeme
     @environment.get(name)
@@ -73,7 +82,7 @@ class Evaluator
   def visit_call_node(node)
     function = evaluate(node.callee)
     arguments = node.arguments.map { |argument| evaluate(argument) }
-    function.call(arguments)
+    function.call(self, arguments)
   end
 
   def visit_binary_node(node)
@@ -133,13 +142,13 @@ class Evaluator
     @globals.define(
       'clock',
       Class.new do
-        def call(arguments) = Process.clock_gettime(Process::CLOCK_REALTIME, :second)
+        def call(_, arguments) = Process.clock_gettime(Process::CLOCK_REALTIME, :second)
       end.new
     )
     @globals.define(
       'sleep',
       Class.new do
-        def call(arguments) = Kernel.sleep(arguments[0])
+        def call(_, arguments) = Kernel.sleep(arguments[0])
       end.new
     )
   end
