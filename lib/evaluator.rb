@@ -22,10 +22,12 @@ class Evaluator
   def visit_block_node(node, environment=nil)
     previous_env = @environment
     @environment = environment.nil? ? Environment.new(@environment) : environment
+    value = nil
     node.statements.each do |statement|
-      evaluate(statement)
+      value = evaluate(statement)
     end
     @environment = previous_env
+    value
   end
 
   def visit_expr_stmt_node(node)
