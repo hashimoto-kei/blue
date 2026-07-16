@@ -1,3 +1,13 @@
+func add2(x, y) {
+  x + y;
+}
+print add2(1, 2);
+
+func add3(x, y, z) {
+  x + y + z;
+}
+print add3(1, 2, 3);
+
 func factorial(n) {
   if (n == 0) {
     1;
