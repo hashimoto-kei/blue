@@ -187,10 +187,10 @@ class Parser
   # parameters: identifier ( "," identifier )*
   def parameters
     params = [consume(:identifier)]
-    until match?(:')')
-      consume(:',')
+    while match?(:',')
       params << consume(:identifier)
     end
+    consume(:')')
     params
   end
 
@@ -337,10 +337,10 @@ class Parser
   # arguments: expression ( "," expression )*
   def arguments
     expressions = [expression]
-    until match?(:')')
-      consume(:',')
+    while match?(:',')
       expressions << expression
     end
+    consume(:')')
     expressions
   end
 end
