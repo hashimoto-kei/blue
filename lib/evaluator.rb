@@ -142,7 +142,7 @@ class Evaluator
     @globals.define(
       'clock',
       Class.new do
-        def call(_, arguments) = Process.clock_gettime(Process::CLOCK_REALTIME, :second)
+        def call(*) = Process.clock_gettime(Process::CLOCK_REALTIME, :second)
       end.new
     )
     @globals.define(
