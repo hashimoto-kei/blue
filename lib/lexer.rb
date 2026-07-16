@@ -9,6 +9,7 @@ class Lexer
     :else,
     :false,
     :for,
+    :func,
     :if,
     :null,
     :or,

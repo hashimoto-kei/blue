@@ -5,6 +5,7 @@ require_relative 'nodes/binary'
 require_relative 'nodes/block'
 require_relative 'nodes/call'
 require_relative 'nodes/expr_stmt'
+require_relative 'nodes/func_declaration'
 require_relative 'nodes/if_stmt'
 require_relative 'nodes/literal'
 require_relative 'nodes/logical'
@@ -88,6 +89,9 @@ class Parser
     if match?(:var)
       return var_declaration
     end
+    if match?(:func)
+      return func_declaration
+    end
     if match?(:'{')
       return block
     end
@@ -165,6 +169,29 @@ class Parser
     end
     consume(:';')
     node = Node::VarDeclaration.new(node, rhs)
+  end
+
+  # func_declaration: "func" funcion
+  def func_declaration = funcion
+
+  # funcion: identifier "(" parameters? ")" block
+  def funcion
+    name = consume(:identifier)
+    consume(:'(')
+    params = match?(:')') ? [] : parameters
+    consume(:'{')
+    body = block
+    Node::FuncDeclaration.new(name, params, body)
+  end
+
+  # parameters: identifier ( "," identifier )*
+  def parameters
+    params = [consume(:identifier)]
+    until match?(:')')
+      consume(:',')
+      params << consume(:identifier)
+    end
+    params
   end
 
   # block: "{" statement* "}"
