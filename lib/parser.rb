@@ -72,6 +72,7 @@ class Parser
   #          | for_statement
   #          | print_statement
   #          | var_declaration
+  #          | func_declaration
   #          | block
   def statement
     if match?(:if)
