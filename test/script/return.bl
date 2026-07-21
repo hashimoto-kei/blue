@@ -1,0 +1,10 @@
+func factorial(n) {
+  if (n == 0) {
+    return 1;
+  }
+  n * factorial(n - 1);
+}
+
+for (var i = 0; i < 10; i = i + 1) {
+  print factorial(i);
+}

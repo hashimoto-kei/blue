@@ -2,6 +2,7 @@
 
 require_relative 'callable'
 require_relative 'environment'
+require_relative 'return'
 
 class Evaluator
   attr_reader :globals
@@ -52,6 +53,11 @@ class Evaluator
     end
   end
 
+  def visit_return_stmt_node(node)
+    value = node.value.nil? ? nil : evaluate(node.value)
+    raise Return.new(value)
+  end
+
   def visit_print_stmt_node(node)
     puts evaluate(node.expr)
   end
@@ -83,6 +89,8 @@ class Evaluator
     function = evaluate(node.callee)
     arguments = node.arguments.map { |argument| evaluate(argument) }
     function.call(self, arguments)
+  rescue Return => e
+    e.value
   end
 
   def visit_binary_node(node)
