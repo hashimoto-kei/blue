@@ -11,6 +11,7 @@ require_relative 'nodes/literal'
 require_relative 'nodes/logical'
 require_relative 'nodes/print_stmt'
 require_relative 'nodes/program'
+require_relative 'nodes/return_stmt'
 require_relative 'nodes/unary'
 require_relative 'nodes/var_declaration'
 require_relative 'nodes/variable'
@@ -70,6 +71,7 @@ class Parser
   #          | if_statement
   #          | while_statement
   #          | for_statement
+  #          | return_statement
   #          | print_statement
   #          | var_declaration
   #          | func_declaration
@@ -83,6 +85,9 @@ class Parser
     end
     if match?(:for)
       return for_statement
+    end
+    if match?(:return)
+      return return_statement
     end
     if match?(:print)
       return print_statement
@@ -152,6 +157,13 @@ class Parser
     block = Node::Block.new([body, increment].compact)
     while_stmt = Node::WhileStmt.new(condition, block)
     node = Node::Block.new([initializer, while_stmt].compact)
+  end
+
+  # return_statement: "return" expression? ";"
+  def return_statement
+    value = (peek.type == :';') ? nil : expression
+    consume(:';')
+    node = Node::ReturnStmt.new(value)
   end
 
   # print_statement: print expression ";"
