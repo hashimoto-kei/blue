@@ -30,8 +30,9 @@ class Evaluator
     node.statements.each do |statement|
       value = evaluate(statement)
     end
-    @environment = previous_env
     value
+  ensure
+    @environment = previous_env
   end
 
   def visit_expr_stmt_node(node)
