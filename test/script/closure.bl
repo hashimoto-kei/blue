@@ -1,0 +1,13 @@
+func generate_counter() {
+  var i = 0;
+  func counter() {
+    i = i + 1;
+    print i;
+  }
+  return counter;
+}
+
+var counter = generate_counter();
+counter();
+counter();
+counter();

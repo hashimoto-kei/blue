@@ -71,7 +71,7 @@ class Evaluator
 
   def visit_func_declaration_node(node)
     name = node.name.lexeme
-    callable = Callable.new(node.params, node.body)
+    callable = Callable.new(node.params, node.body, @environment)
     @environment.define(name, callable)
   end
 
