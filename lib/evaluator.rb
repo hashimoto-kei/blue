@@ -8,6 +8,7 @@ class Evaluator
   attr_reader :globals
 
   def initialize
+    @locals = {}
     @globals = Environment.new
     @environment = @globals
     define_native_functions
@@ -15,6 +16,10 @@ class Evaluator
 
   def evaluate(node)
     node.accept(self)
+  end
+
+  def resolve(node, distance)
+    @locals[node] = distance
   end
 
   def visit_program_node(node)
@@ -77,13 +82,15 @@ class Evaluator
 
   def visit_variable_node(node)
     name = node.var.lexeme
-    @environment.get(name)
+    distance = @locals[node]
+    distance.nil? ? @globals.get(name) : @environment.get_at(distance, name)
   end
 
   def visit_assign_node(node)
     name = node.lhs.var.lexeme
     value = evaluate(node.rhs)
-    @environment.assign(name, value)
+    distance = @locals[node]
+    distance.nil? ? @globals.assign(name, value) : @environment.assign_at(distance, name, value)
   end
 
   def visit_call_node(node)

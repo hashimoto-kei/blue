@@ -11,3 +11,13 @@ var counter = generate_counter();
 counter();
 counter();
 counter();
+
+var x = "global";
+{
+  func show_x() {
+    print x;
+  }
+  show_x();
+  var x = "block";
+  show_x();
+}

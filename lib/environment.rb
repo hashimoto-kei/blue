@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Environment
+  attr_reader :variables, :enclosing
+
   def initialize(enclosing=nil)
     @variables = {}
     @enclosing = enclosing
@@ -28,5 +30,23 @@ class Environment
       return @enclosing.get(name)
     end
     raise "Undefined variable: '#{name}'."
+  end
+
+  def assign_at(distance, name, value)
+    ancestor(distance).variables[name] = value
+  end
+
+  def get_at(distance, name)
+    ancestor(distance).variables[name]
+  end
+
+  private
+
+  def ancestor(distance)
+    environment = self
+    distance.times do
+      environment = environment.enclosing
+    end
+    environment
   end
 end
