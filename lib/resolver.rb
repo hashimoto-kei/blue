@@ -113,6 +113,7 @@ class Resolver
   end
 
   def declare(name)
+    raise "Syntax error: variable '#{name}' already declared in this scope." if @scopes.last&.key?(name)
     @scopes.last[name] = false unless @scopes.empty?
   end
 
