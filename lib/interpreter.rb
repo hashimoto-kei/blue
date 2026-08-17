@@ -3,6 +3,7 @@
 require_relative 'evaluator'
 require_relative 'lexer'
 require_relative 'parser'
+require_relative 'resolver'
 
 class Interpreter
   def initialize(path)
@@ -15,6 +16,8 @@ class Interpreter
     parser = Parser.new(tokens)
     node = parser.parse
     evaluator = Evaluator.new
+    resolver = Resolver.new(evaluator)
+    resolver.resolve(node)
     evaluator.evaluate(node)
   end
 end
