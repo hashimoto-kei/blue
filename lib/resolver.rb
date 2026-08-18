@@ -4,6 +4,7 @@ class Resolver
   def initialize(evaluator)
     @evaluator = evaluator
     @scopes = []
+    @current_func_type = :none
   end
 
   def resolve(node)
@@ -42,6 +43,7 @@ class Resolver
   end
 
   def visit_return_stmt_node(node)
+    raise 'Syntax error: cannot return in top-level scope.' if @current_func_type == :none
     unless node.value.nil?
       resolve(node.value)
     end
@@ -62,7 +64,7 @@ class Resolver
     name = node.name.lexeme
     declare(name)
     define(name)
-    resolve_function(node)
+    resolve_function(node, :funcion)
   end
 
   def visit_variable_node(node)
@@ -130,7 +132,9 @@ class Resolver
     end
   end
 
-  def resolve_function(node)
+  def resolve_function(node, func_type)
+    enclosing_func_type = @current_func_type
+    @current_func_type = func_type
     begin_scope
     node.params.each do |param|
       name = param.lexeme
@@ -139,5 +143,6 @@ class Resolver
     end
     visit_block_node(node.body, new_scope: false)
     end_scope
+    @current_func_type = enclosing_func_type
   end
 end
