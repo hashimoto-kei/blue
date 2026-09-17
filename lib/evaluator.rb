@@ -2,6 +2,7 @@
 
 require_relative 'callable'
 require_relative 'environment'
+require_relative 'klass'
 require_relative 'return'
 
 class Evaluator
@@ -68,6 +69,12 @@ class Evaluator
     puts evaluate(node.expr)
   end
 
+  def visit_class_declaration_node(node)
+    name = node.name.lexeme
+    klass = Klass.new(name)
+    @environment.define(name, klass)
+  end
+
   def visit_var_declaration_node(node)
     name = node.lhs.lexeme
     value = node.rhs.nil? ? nil : evaluate(node.rhs)
@@ -99,6 +106,17 @@ class Evaluator
     function.call(self, arguments)
   rescue Return => e
     e.value
+  end
+
+  def visit_get_node(node)
+    instance = evaluate(node.object)
+    instance.get(node.name.lexeme)
+  end
+
+  def visit_set_node(node)
+    instance = evaluate(node.object)
+    value = evaluate(node.value)
+    instance.set(node.name.lexeme, value)
   end
 
   def visit_binary_node(node)

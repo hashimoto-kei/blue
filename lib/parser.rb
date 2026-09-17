@@ -4,14 +4,17 @@ require_relative 'nodes/assign'
 require_relative 'nodes/binary'
 require_relative 'nodes/block'
 require_relative 'nodes/call'
+require_relative 'nodes/class_declaration'
 require_relative 'nodes/expr_stmt'
 require_relative 'nodes/func_declaration'
+require_relative 'nodes/get'
 require_relative 'nodes/if_stmt'
 require_relative 'nodes/literal'
 require_relative 'nodes/logical'
 require_relative 'nodes/print_stmt'
 require_relative 'nodes/program'
 require_relative 'nodes/return_stmt'
+require_relative 'nodes/set'
 require_relative 'nodes/unary'
 require_relative 'nodes/var_declaration'
 require_relative 'nodes/variable'
@@ -73,6 +76,7 @@ class Parser
   #          | for_statement
   #          | return_statement
   #          | print_statement
+  #          | class_declaration
   #          | var_declaration
   #          | func_declaration
   #          | block
@@ -91,6 +95,9 @@ class Parser
     end
     if match?(:print)
       return print_statement
+    end
+    if match?(:class)
+      return class_declaration
     end
     if match?(:var)
       return var_declaration
@@ -173,6 +180,17 @@ class Parser
     node = Node::PrintStmt.new(node)
   end
 
+  # class_declaration: "class" identifier "{" funcion* "}"
+  def class_declaration
+    node = consume(:identifier)
+    consume(:'{')
+    methods = []
+    until match?(:'}')
+      methods << funcion
+    end
+    node = Node::ClassDeclaration.new(node, methods)
+  end
+
   # var_declaration: "var" identifier ("=" expression)? ";"
   def var_declaration
     node = consume(:identifier)
@@ -219,13 +237,18 @@ class Parser
   # expression: assignment
   def expression = assignment
 
-  # assignment: identifier "=" assignment
+  # assignment: ( call "." )? identifier "=" assignment
   #           | logical_or
   def assignment
     node = logical_or
     if match?(:'=')
       rhs = assignment
-      node = Node::Assign.new(node, rhs)
+      case node
+      in Node::Variable
+        node = Node::Assign.new(node, rhs)
+      in Node::Get
+        node = Node::Set.new(node.object, node.name, rhs)
+      end
     end
     node
   end
@@ -332,7 +355,7 @@ class Parser
     end
     if match?(:identifier)
       node = Node::Variable.new(previous_token)
-      return match?(:'(') ? call(node) : node
+      return match?(:'(') ? call(node) : match?(:'.') ? get(node) : node
     end
     if match?(:'(')
       node = expression
@@ -355,5 +378,11 @@ class Parser
     end
     consume(:')')
     expressions
+  end
+
+  # get: identifier ( "." identifier )+
+  def get(callee)
+    rhs = consume(:identifier)
+    Node::Get.new(callee, rhs)
   end
 end

@@ -53,6 +53,12 @@ class Resolver
     resolve(node.expr)
   end
 
+  def visit_class_declaration_node(node)
+    name = node.name.lexeme
+    declare(name)
+    define(name)
+  end
+
   def visit_var_declaration_node(node)
     name = node.lhs.lexeme
     declare(name)
@@ -84,6 +90,15 @@ class Resolver
   def visit_call_node(node)
     resolve(node.callee)
     node.arguments.each { |argument| resolve(argument) }
+  end
+
+  def visit_get_node(node)
+    resolve(node.object)
+  end
+
+  def visit_set_node(node)
+    resolve(node.object)
+    resolve(node.value)
   end
 
   def visit_binary_node(node)
