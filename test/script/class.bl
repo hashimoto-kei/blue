@@ -1,0 +1,7 @@
+class Member {}
+var john = Member();
+var paul = Member();
+john.name = "John Lennon";
+paul.name = "Paul McCartney";
+print john.name;
+print paul.name;
