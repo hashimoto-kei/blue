@@ -355,15 +355,7 @@ class Parser
     end
     if match?(:identifier)
       node = Node::Variable.new(previous_token)
-      while match?(:'(', :'.')
-        case previous_token.type
-        in :'('
-          node = call(node)
-        in :'.'
-          node = get(node)
-        end
-      end
-      return node
+      return call(node)
     end
     if match?(:'(')
       node = expression
@@ -372,10 +364,20 @@ class Parser
     end
   end
 
-  # call: identifier ( "(" arguments? ")" )+
-  def call(callee)
-    rhs = match?(:')') ? [] : arguments
-    Node::Call.new(callee, rhs)
+  # call: identifier ( "(" arguments? ")" | "." identifier )*
+  def call(node)
+    loop do
+      if match?(:'(')
+        rhs = match?(:')') ? [] : arguments
+        node = Node::Call.new(node, rhs)
+      elsif match?(:'.')
+        rhs = consume(:identifier)
+        node = Node::Get.new(node, rhs)
+      else
+        break
+      end
+    end
+    node
   end
 
   # arguments: expression ( "," expression )*
@@ -386,11 +388,5 @@ class Parser
     end
     consume(:')')
     expressions
-  end
-
-  # get: identifier ( "." identifier )+
-  def get(callee)
-    rhs = consume(:identifier)
-    Node::Get.new(callee, rhs)
   end
 end
