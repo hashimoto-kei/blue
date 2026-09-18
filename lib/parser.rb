@@ -366,15 +366,14 @@ class Parser
 
   # call: identifier ( "(" arguments? ")" | "." identifier )*
   def call(node)
-    loop do
-      if match?(:'(')
+    while match?(:'(', :'.')
+      case previous_token.type
+      in :'('
         rhs = match?(:')') ? [] : arguments
         node = Node::Call.new(node, rhs)
-      elsif match?(:'.')
+      in :'.'
         rhs = consume(:identifier)
         node = Node::Get.new(node, rhs)
-      else
-        break
       end
     end
     node
