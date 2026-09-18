@@ -355,7 +355,15 @@ class Parser
     end
     if match?(:identifier)
       node = Node::Variable.new(previous_token)
-      return match?(:'(') ? call(node) : match?(:'.') ? get(node) : node
+      while match?(:'(', :'.')
+        case previous_token.type
+        in :'('
+          node = call(node)
+        in :'.'
+          node = get(node)
+        end
+      end
+      return node
     end
     if match?(:'(')
       node = expression

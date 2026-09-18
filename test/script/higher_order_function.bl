@@ -1,0 +1,8 @@
+func generate_logger() {
+  func logger(msg) {
+    print msg;
+  }
+  return logger;
+}
+
+generate_logger()("Hello, world!");
