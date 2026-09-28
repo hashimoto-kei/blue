@@ -71,7 +71,10 @@ class Evaluator
 
   def visit_class_declaration_node(node)
     name = node.name.lexeme
-    klass = Klass.new(name)
+    methods = node.methods.to_h do |method|
+      [method.name.lexeme, Callable.new(method.params, method.body, @environment)]
+    end
+    klass = Klass.new(name, methods)
     @environment.define(name, klass)
   end
 

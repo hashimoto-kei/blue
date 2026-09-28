@@ -7,8 +7,8 @@ class Instance
   end
 
   def get(name)
-    raise "Undefined property #{name}" unless @fields.key?(name)
-    @fields[name]
+    raise "Undefined property #{name}" unless (@fields.key?(name) || @klass.find_method(name))
+    @fields[name] || @klass.find_method(name)
   end
 
   def set(name, value)
