@@ -2,7 +2,7 @@
 
 module Node
   class ClassDeclaration
-    attr_reader :name
+    attr_reader :name, :methods
 
     def initialize(name, methods)
       @name = name

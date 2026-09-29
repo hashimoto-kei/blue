@@ -1,0 +1,7 @@
+class Member {
+  hello() {
+    print "Hello!";
+  }
+}
+var john = Member();
+john.hello();

@@ -57,6 +57,9 @@ class Resolver
     name = node.name.lexeme
     declare(name)
     define(name)
+    node.methods.each do |method|
+      resolve_function(method, :method)
+    end
   end
 
   def visit_var_declaration_node(node)
