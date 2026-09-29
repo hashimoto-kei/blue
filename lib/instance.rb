@@ -7,8 +7,10 @@ class Instance
   end
 
   def get(name)
-    raise "Undefined property #{name}" unless (@fields.key?(name) || @klass.find_method(name))
-    @fields[name] || @klass.find_method(name)
+    return @fields[name] if @fields.key?(name)
+    method = @klass.find_method(name)
+    return method unless method.nil?
+    raise "Undefined property #{name}"
   end
 
   def set(name, value)
