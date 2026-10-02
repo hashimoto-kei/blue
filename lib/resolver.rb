@@ -57,9 +57,13 @@ class Resolver
     name = node.name.lexeme
     declare(name)
     define(name)
+    begin_scope
+    declare('this')
+    define('this')
     node.methods.each do |method|
       resolve_function(method, :method)
     end
+    end_scope
   end
 
   def visit_var_declaration_node(node)
@@ -87,6 +91,11 @@ class Resolver
   def visit_assign_node(node)
     resolve(node.rhs)
     name = node.lhs.var.lexeme
+    resolve_local(name, node)
+  end
+
+  def visit_this_node(node)
+    name = node.keyword.lexeme
     resolve_local(name, node)
   end
 

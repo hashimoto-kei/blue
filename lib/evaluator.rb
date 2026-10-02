@@ -103,6 +103,12 @@ class Evaluator
     distance.nil? ? @globals.assign(name, value) : @environment.assign_at(distance, name, value)
   end
 
+  def visit_this_node(node)
+    name = node.keyword.lexeme
+    distance = @locals[node]
+    distance.nil? ? @globals.get(name) : @environment.get_at(distance, name)
+  end
+
   def visit_call_node(node)
     function = evaluate(node.callee)
     arguments = node.arguments.map { |argument| evaluate(argument) }

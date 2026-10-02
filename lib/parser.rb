@@ -15,6 +15,7 @@ require_relative 'nodes/print_stmt'
 require_relative 'nodes/program'
 require_relative 'nodes/return_stmt'
 require_relative 'nodes/set'
+require_relative 'nodes/this'
 require_relative 'nodes/unary'
 require_relative 'nodes/var_declaration'
 require_relative 'nodes/variable'
@@ -320,14 +321,14 @@ class Parser
   end
 
   # unary: ( "-" | "!" ) unary
-  #      | primary
+  #      | call
   def unary
     if match?(:-, :!)
       op = previous_token
       rhs = unary
       node = Node::Unary.new(op, rhs)
     else
-      node = primary
+      node = call
     end
     node
   end
@@ -337,8 +338,8 @@ class Parser
   #        | "true"
   #        | "false"
   #        | "null"
+  #        | "this"
   #        | identifier
-  #        | call
   #        | "(" expression ")"
   def primary
     if match?(:number, :string)
@@ -353,9 +354,11 @@ class Parser
     if match?(:null)
       return Node::Literal.new(nil)
     end
+    if match?(:this)
+      return Node::This.new(previous_token)
+    end
     if match?(:identifier)
-      node = Node::Variable.new(previous_token)
-      return call(node)
+      return Node::Variable.new(previous_token)
     end
     if match?(:'(')
       node = expression
@@ -364,8 +367,9 @@ class Parser
     end
   end
 
-  # call: identifier ( "(" arguments? ")" | "." identifier )*
-  def call(node)
+  # call: primary ( "(" arguments? ")" | "." identifier )*
+  def call
+    node = primary
     while match?(:'(', :'.')
       case previous_token.type
       in :'('

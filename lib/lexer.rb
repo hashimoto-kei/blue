@@ -16,6 +16,7 @@ class Lexer
     :or,
     :print,
     :return,
+    :this,
     :true,
     :var,
     :while,
