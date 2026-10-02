@@ -9,7 +9,7 @@ class Instance
   def get(name)
     return @fields[name] if @fields.key?(name)
     method = @klass.find_method(name)
-    return method unless method.nil?
+    return method.bind(self) unless method.nil?
     raise "Undefined property #{name}"
   end
 

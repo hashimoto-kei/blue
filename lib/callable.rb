@@ -12,4 +12,10 @@ class Callable
     @params.each_with_index { |param, i| environment.define(param.lexeme, arguments[i]) }
     evaluator.visit_block_node(@body, environment)
   end
+
+  def bind(instance)
+    environment = Environment.new(@closure)
+    environment.define('this', instance)
+    Callable.new(@params, @body, environment)
+  end
 end
