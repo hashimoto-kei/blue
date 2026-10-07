@@ -333,6 +333,22 @@ class Parser
     node
   end
 
+  # call: primary ( "(" arguments? ")" | "." identifier )*
+  def call
+    node = primary
+    while match?(:'(', :'.')
+      case previous_token.type
+      in :'('
+        rhs = match?(:')') ? [] : arguments
+        node = Node::Call.new(node, rhs)
+      in :'.'
+        rhs = consume(:identifier)
+        node = Node::Get.new(node, rhs)
+      end
+    end
+    node
+  end
+
   # primary: number
   #        | string
   #        | "true"
@@ -365,22 +381,6 @@ class Parser
       consume(:')')
       node
     end
-  end
-
-  # call: primary ( "(" arguments? ")" | "." identifier )*
-  def call
-    node = primary
-    while match?(:'(', :'.')
-      case previous_token.type
-      in :'('
-        rhs = match?(:')') ? [] : arguments
-        node = Node::Call.new(node, rhs)
-      in :'.'
-        rhs = consume(:identifier)
-        node = Node::Get.new(node, rhs)
-      end
-    end
-    node
   end
 
   # arguments: expression ( "," expression )*
