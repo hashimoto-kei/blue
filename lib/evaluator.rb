@@ -92,8 +92,7 @@ class Evaluator
 
   def visit_variable_node(node)
     name = node.var.lexeme
-    distance = @locals[node]
-    distance.nil? ? @globals.get(name) : @environment.get_at(distance, name)
+    lookup_variable(name, node)
   end
 
   def visit_assign_node(node)
@@ -105,8 +104,7 @@ class Evaluator
 
   def visit_this_node(node)
     name = node.keyword.lexeme
-    distance = @locals[node]
-    distance.nil? ? @globals.get(name) : @environment.get_at(distance, name)
+    lookup_variable(name, node)
   end
 
   def visit_call_node(node)
@@ -180,6 +178,11 @@ class Evaluator
   end
 
   private
+
+  def lookup_variable(name, node)
+    distance = @locals[node]
+    distance.nil? ? @globals.get(name) : @environment.get_at(distance, name)
+  end
 
   def define_native_functions
     @globals.define(
