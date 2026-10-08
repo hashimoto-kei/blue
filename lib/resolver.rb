@@ -5,6 +5,7 @@ class Resolver
     @evaluator = evaluator
     @scopes = []
     @current_func_type = :none
+    @current_class_type = :none
   end
 
   def resolve(node)
@@ -54,6 +55,8 @@ class Resolver
   end
 
   def visit_class_declaration_node(node)
+    enclosing_class_type = @current_class_type
+    @current_class_type = :class
     name = node.name.lexeme
     declare(name)
     define(name)
@@ -64,6 +67,7 @@ class Resolver
       resolve_function(method, :method)
     end
     end_scope
+    @current_class_type = enclosing_class_type
   end
 
   def visit_var_declaration_node(node)
@@ -95,6 +99,7 @@ class Resolver
   end
 
   def visit_this_node(node)
+    raise 'Syntax error: cannot use "this" in top-level scope.' if @current_class_type == :none
     name = node.keyword.lexeme
     resolve_local(name, node)
   end
