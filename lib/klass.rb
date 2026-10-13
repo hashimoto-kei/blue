@@ -9,7 +9,10 @@ class Klass
   end
 
   def call(evaluator, arguments)
-    Instance.new(self)
+    instance = Instance.new(self)
+    constructor = find_method('init')
+    constructor.bind(instance).call(evaluator, arguments) unless constructor.nil?
+    instance
   end
 
   def find_method(name)

@@ -1,0 +1,11 @@
+class Member {
+  init(name) {
+    this.name = name;
+  }
+
+  hello() {
+    print "I'm " + this.name + "!";
+  }
+}
+var john = Member("John Lennon");
+john.hello();
