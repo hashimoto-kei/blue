@@ -3,7 +3,6 @@
 require_relative 'callable'
 require_relative 'environment'
 require_relative 'klass'
-require_relative 'return'
 
 class Evaluator
   attr_reader :globals
@@ -111,8 +110,6 @@ class Evaluator
     function = evaluate(node.callee)
     arguments = node.arguments.map { |argument| evaluate(argument) }
     function.call(self, arguments)
-  rescue Return => e
-    e.value
   end
 
   def visit_get_node(node)

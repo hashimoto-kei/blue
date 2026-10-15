@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative 'return'
+
 class Callable
   def initialize(params, body, closure)
     @params = params
@@ -11,6 +13,8 @@ class Callable
     environment = Environment.new(@closure)
     @params.each_with_index { |param, i| environment.define(param.lexeme, arguments[i]) }
     evaluator.visit_block_node(@body, environment)
+  rescue Return => e
+    e.value
   end
 
   def bind(instance)
