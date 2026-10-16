@@ -46,6 +46,7 @@ class Resolver
   def visit_return_stmt_node(node)
     raise 'Syntax error: cannot return in top-level scope.' if @current_func_type == :none
     unless node.value.nil?
+      raise 'Syntax error: cannot return value from constructor.' if @current_func_type == :constructor
       resolve(node.value)
     end
   end
@@ -64,7 +65,8 @@ class Resolver
     declare('this')
     define('this')
     node.methods.each do |method|
-      resolve_function(method, :method)
+      func_type = (method.name.lexeme == 'init' ? :constructor : :method)
+      resolve_function(method, func_type)
     end
     end_scope
     @current_class_type = enclosing_class_type
